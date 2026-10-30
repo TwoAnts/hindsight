@@ -354,6 +354,7 @@ export async function buildSessionStartContext(args: {
   const additionalContext = buildKnowledgePreamble(pages, {
     reflectOnNewGoals: cfg.autoInject !== "reflect",
     extra: cfg.toolGuideExtra,
+    initiativePages: cfg.initiativePages,
   });
   // An empty page roster is NOT an empty bank: a bank with memories and no pages still answers a
   // reflect (#5209), so only the confirmed-empty probe above defers it.

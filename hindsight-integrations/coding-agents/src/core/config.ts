@@ -204,6 +204,12 @@ export interface RawConfig {
    *
    *  File-only, and replaced (not merged) by a `banks.<id>` section, exactly like `pages`. */
   customPages?: CustomPagesConfig;
+  /** Whether the agent may capture per-initiative knowledge pages (default true). When false the
+   *  `hindsight_capture_initiative` tool is not registered at all and the session guides stop
+   *  nudging the agent to call it — adding a feature no longer mints a new page under the
+   *  Initiatives folder. Pages captured earlier are untouched: they keep their content and their
+   *  refresh policy (still governed by `pageTriggerType`/`pageTriggerCron`). */
+  initiativePages?: boolean;
   autoSeed?: boolean; // SessionStart: auto-seed a cold repo's bank from git history (default true)
   seedLimit?: number; // git-log document: keeps between seedLimit/2 and seedLimit newest commits (default 300)
   codebaseSurvey?: boolean; // SessionStart: spawn a headless claude to survey a cold repo's structure (default true)
@@ -337,6 +343,7 @@ export interface Config {
   pageTriggerCron?: string;
   pages: PagesConfig;
   customPages: CustomPagesConfig;
+  initiativePages: boolean;
   autoSeed: boolean;
   seedLimit: number;
   codebaseSurvey: boolean;
@@ -658,6 +665,7 @@ export function resolveConfig(raw: RawConfig = {}): Config {
     pageTriggerCron: pageTrigger.cron,
     pages: resolvePages(raw.pages),
     customPages: resolveCustomPages(raw.customPages),
+    initiativePages: raw.initiativePages ?? true,
     autoSeed: raw.autoSeed ?? true,
     seedLimit: raw.seedLimit || DEFAULT_SEED_LIMIT,
     codebaseSurvey: raw.codebaseSurvey ?? true,
@@ -784,6 +792,7 @@ const ENV_KEYS = {
   pageRefreshEveryTurns: "HINDSIGHT_PAGE_REFRESH_EVERY_TURNS",
   pageTriggerType: "HINDSIGHT_PAGE_TRIGGER_TYPE",
   pageTriggerCron: "HINDSIGHT_PAGE_TRIGGER_CRON",
+  initiativePages: "HINDSIGHT_INITIATIVE_PAGES",
   autoSeed: "HINDSIGHT_AUTO_SEED",
   seedLimit: "HINDSIGHT_SEED_LIMIT",
   codebaseSurvey: "HINDSIGHT_CODEBASE_SURVEY",
@@ -811,6 +820,7 @@ const ENV_BOOLEANS = new Set<keyof RawConfig>([
   "disabled",
   "retainSessions",
   "autoReflect",
+  "initiativePages",
   "autoSeed",
   "codebaseSurvey",
   "autoUpdate",

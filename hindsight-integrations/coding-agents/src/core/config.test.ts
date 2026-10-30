@@ -516,6 +516,20 @@ describe("environment fallback", () => {
     expect(cfg.seedLimit).toBe(5);
   });
 
+  it("initiativePages defaults to true and can be turned off from the file or the env", () => {
+    writeJson(globalCfg, {});
+    expect(loadConfig({ path: globalCfg }).initiativePages).toBe(true);
+    writeJson(globalCfg, { initiativePages: false });
+    expect(loadConfig({ path: globalCfg }).initiativePages).toBe(false);
+    writeJson(globalCfg, {});
+    process.env.HINDSIGHT_INITIATIVE_PAGES = "false";
+    try {
+      expect(loadConfig({ path: globalCfg }).initiativePages).toBe(false);
+    } finally {
+      delete process.env.HINDSIGHT_INITIATIVE_PAGES;
+    }
+  });
+
   it("ignores a malformed number instead of resolving it to NaN", () => {
     writeJson(globalCfg, {});
     vi.spyOn(console, "error").mockImplementation(() => {});

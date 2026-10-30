@@ -103,6 +103,14 @@ describe("buildRosterRefresh", () => {
     // No roster block when there are no pages.
     expect(out).not.toContain("Current Hindsight knowledge pages");
   });
+  it("initiativePages:false drops the capture nudge but keeps every other tool line", () => {
+    const out = buildRosterRefresh([{ id: "p1", title: "Component map" }], {
+      initiativePages: false,
+    });
+    expect(out).not.toContain("hindsight_capture_initiative");
+    expect(out).toContain("hindsight_reflect");
+    expect(out).toContain("hindsight_ingest_document");
+  });
 });
 
 describe("toolGuideExtra (#4791)", () => {

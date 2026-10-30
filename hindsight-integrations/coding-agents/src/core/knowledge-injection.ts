@@ -80,12 +80,21 @@ const TOOL_GUIDE =
   "of re-deriving them from the code; follow any [[page:<id>]] links you see.\n" +
   "- hindsight_reflect(query) — when pages are too shallow and you need the WHY: deep reasoning over the " +
   "repo's full memory for the past decision and exact values that explain a behavior or bug (slower — " +
-  'use deliberately, and credit results with a blockquote header "> 🧠 **From Hindsight memory** — <summary>").\n' +
+  'use deliberately, and credit results with a blockquote header "> 🧠 **From Hindsight memory** — <summary>").\n';
+
+/**
+ * The capture nudge, kept separate so `initiativePages: false` can drop it: the guide must not
+ * advertise a tool the host never registered, or the agent burns turns reaching for something that
+ * is not there.
+ */
+const CAPTURE_GUIDE =
   "- hindsight_capture_initiative(title, summary) — right after the user approves a plan or finishes brainstorming a " +
   "new feature/capability and you are about to start implementing (BEFORE you write any code), call this to " +
   "record it as a tracked page; then call it AGAIN with relates_to_page_id set to that page whenever the goal, " +
   "scope, or rationale materially changes mid-work, so the page tracks the current plan and not the opening one. " +
-  "Skip bug fixes, small tweaks, chores, and trivial course-corrections.\n" +
+  "Skip bug fixes, small tweaks, chores, and trivial course-corrections.\n";
+
+const INGEST_GUIDE =
   "- hindsight_ingest_document(title, content) — save an external document or durable notes/findings you want " +
   "remembered (not the current conversation — that is captured automatically at session end).";
 
@@ -106,12 +115,20 @@ export interface ToolGuideOpts {
   reflectOnNewGoals?: boolean;
   /** cfg.toolGuideExtra: the team's own guidance, added after ours rather than replacing it. */
   extra?: string;
+  /** cfg.initiativePages — when false, omit the capture nudge: the host did not register
+   *  hindsight_capture_initiative, so the guide must not tell the agent to reach for it. */
+  initiativePages?: boolean;
 }
 
 function toolGuide(opts?: ToolGuideOpts): string {
   const extra = opts?.extra?.trim();
+  const capture = opts?.initiativePages === false ? "" : CAPTURE_GUIDE;
   return (
-    (opts?.reflectOnNewGoals ? PAGES_FIRST_ON_GOALS : "") + TOOL_GUIDE + (extra ? `\n${extra}` : "")
+    (opts?.reflectOnNewGoals ? PAGES_FIRST_ON_GOALS : "") +
+    TOOL_GUIDE +
+    capture +
+    INGEST_GUIDE +
+    (extra ? `\n${extra}` : "")
   );
 }
 

@@ -389,6 +389,7 @@ export async function buildHookOutput(args: {
       buildRosterRefresh(pages, {
         reflectOnNewGoals: cfg.autoInject !== "reflect",
         extra: cfg.toolGuideExtra,
+        initiativePages: cfg.initiativePages,
       })
     );
   }

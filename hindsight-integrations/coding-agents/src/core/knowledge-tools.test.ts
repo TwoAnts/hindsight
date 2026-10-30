@@ -43,6 +43,17 @@ describe("buildKnowledgeTools", () => {
     expect(tools.map((t) => t.name).sort()).toEqual([...EXPECTED_TOOLS].sort());
   });
 
+  it("initiativePages:false removes the capture tool and keeps every other tool", () => {
+    const client = stubClient();
+    const names = buildKnowledgeTools(client, "repo-a", { initiativePages: false }).map(
+      (t) => t.name
+    );
+    expect(names).not.toContain("hindsight_capture_initiative");
+    expect(names.sort()).toEqual(
+      EXPECTED_TOOLS.filter((n) => n !== "hindsight_capture_initiative").sort()
+    );
+  });
+
   it("hindsight_sync_status is the FIRST tool in the list", () => {
     const client = stubClient();
     const tools = buildKnowledgeTools(client, "repo-a");

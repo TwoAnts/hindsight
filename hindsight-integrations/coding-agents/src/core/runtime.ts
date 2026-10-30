@@ -93,6 +93,7 @@ export class RuntimeCore {
       reflectTimeoutMs: this.cfg.reflectToolTimeoutMs,
       reflectBudget: this.cfg.reflectBudget,
       toolGuideExtra: this.cfg.toolGuideExtra,
+      initiativePages: this.cfg.initiativePages,
       stampFor: () =>
         buildRetainStamp(this.cfg, {
           directory: this.projectDir,
@@ -202,6 +203,7 @@ export class RuntimeCore {
         buildKnowledgePreamble(output.pages, {
           reflectOnNewGoals: this.cfg.autoInject !== "reflect",
           extra: this.cfg.toolGuideExtra,
+          initiativePages: this.cfg.initiativePages,
         })
       );
     }

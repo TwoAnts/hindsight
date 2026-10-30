@@ -127,11 +127,14 @@ export function buildKnowledgeTools(
     reflectBudget?: "low" | "mid" | "high";
     /** cfg.toolGuideExtra, added after the crediting note so it lands with the results too. */
     toolGuideExtra?: string;
+    /** cfg.initiativePages — when false, `hindsight_capture_initiative` is not registered at all:
+     *  adding a feature stops minting per-initiative pages. Pages captured earlier are untouched. */
+    initiativePages?: boolean;
   } = {}
 ): ToolSpec[] {
   const extra = opts.toolGuideExtra?.trim();
   const crediting = extra ? `${CREDIT_REMINDER} ${extra}` : CREDIT_REMINDER;
-  return [
+  const tools: ToolSpec[] = [
     {
       name: "hindsight_sync_status",
       description:
@@ -376,4 +379,10 @@ export function buildKnowledgeTools(
       }),
     },
   ];
+  // initiativePages:false removes the capture surface entirely: the agent cannot mint a new
+  // per-initiative page when it is never offered the tool. Reads/list stay — pages captured under
+  // the old default remain as valuable as ever, they just stop multiplying.
+  return opts.initiativePages === false
+    ? tools.filter((t) => t.name !== "hindsight_capture_initiative")
+    : tools;
 }
